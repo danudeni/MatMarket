@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% from "_macros.html" import bit %}
+{% block content %}
+<h1>Implementasi logika matematika dalam sistem bisnis untuk mendukung penentuan strategi pemasaran</h1>
+<p class="lead">Ubah kondisi bisnis menjadi pernyataan benar atau salah, lalu biarkan aturan logika memilih strategi pemasaran yang masuk akal.</p>
+
+<section>
+  <h2>Contoh: “Jika harga turun, maka penjualan naik”</h2>
+  <table class="tt">
+    <thead><tr><th>Harga turun (p)</th><th>Penjualan naik (q)</th><th>p → q</th></tr></thead>
+    <tbody>
+      {% for p, q in [(True,True),(True,False),(False,True),(False,False)] %}
+      <tr><td>{{ bit(p) }}</td><td>{{ bit(q) }}</td><td>{{ bit((not p) or q) }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p class="note">Satu-satunya kasus yang melanggar aturan: harga turun tetapi penjualan tidak naik.</p>
+</section>
+
+<section class="stats">
+  <p><strong>{{ rule_count }}</strong> aturan bisnis aktif</p>
+  {% if last %}<p>Analisis terakhir: {{ last.created_at }}, {{ last.outcome|length }} aturan terpenuhi</p>{% endif %}
+  <p><a class="btn" href="{{ url_for('strategi') }}">Tentukan strategi</a></p>
+</section>
+{% endblock %}

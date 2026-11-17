@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% from "_macros.html" import bit %}
+{% block title %}Riwayat{% endblock %}
+{% block content %}
+<h1>Riwayat analisis</h1>
+{% if items %}
+<div class="scroll">
+<table class="data">
+  <thead><tr><th>Waktu</th><th>Kondisi benar</th><th>Hasil</th></tr></thead>
+  <tbody>
+  {% for it in items %}
+    <tr><td>{{ it.created_at }}</td>
+      <td>{% for k, v in it.facts.items() if v %}{{ label(k) }}{% if not loop.last %}, {% endif %}{% else %}-{% endfor %}</td>
+      <td>{% for o in it.outcome %}{{ o.strategy }}{% if not loop.last %}; {% endif %}{% else %}-{% endfor %}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+<form method="post" action="{{ url_for('hapus_riwayat') }}"><button class="link" type="submit">Hapus semua riwayat</button></form>
+{% else %}
+<p>Belum ada riwayat. Jalankan analisis di halaman <a href="{{ url_for('strategi') }}">Tentukan strategi</a>.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Tentukan strategi{% endblock %}
+{% block content %}
+<h1>Tentukan strategi</h1>
+<p class="lead">Centang kondisi yang saat ini benar untuk bisnis Anda.</p>
+<form method="post" class="facts">
+  {% for n in names %}
+    <label><input type="checkbox" name="{{ n }}" {% if facts[n] %}checked{% endif %}> {{ label(n) }}</label>
+  {% endfor %}
+  <button class="btn" type="submit">Analisis</button>
+</form>
+
+{% if result %}
+<section>
+  {% for r in result.warnings %}
+    <div class="out warn"><strong>Perhatian:</strong> {{ r.strategy }}<br><code>{{ r.formal }}</code></div>
+  {% endfor %}
+  {% for r in result.strategies %}
+    <div class="out"><strong>{{ r.strategy }}</strong><br>Karena aturan “{{ r.name }}”: <code>{{ r.formal }}</code></div>
+  {% else %}
+    {% if not result.warnings %}<p>Belum ada aturan yang terpenuhi. Ubah kondisi atau tambahkan aturan baru.</p>{% endif %}
+  {% endfor %}
+  {% if result.skipped %}
+  <details><summary>{{ result.skipped|length }} aturan tidak terpenuhi</summary>
+    <ul>{% for r in result.skipped %}<li>{{ r.name }}: <code>{{ r.formal }}</code></li>{% endfor %}</ul>
+  </details>
+  {% endif %}
+</section>
+{% endif %}
+{% endblock %}

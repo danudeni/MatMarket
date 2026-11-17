@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Aturan bisnis{% endblock %}
+{% block content %}
+<h1>Aturan bisnis</h1>
+<p class="lead">Setiap aturan berbentuk “jika kondisi benar, maka strategi dipilih”. Kondisi ditulis dengan AND, OR, NOT, XOR, -&gt;, &lt;-&gt;.</p>
+<div class="scroll">
+<table class="data">
+  <thead><tr><th>Prioritas</th><th>Nama</th><th>Kondisi</th><th>Strategi</th><th>Jenis</th><th></th></tr></thead>
+  <tbody>
+  {% for r in rules %}
+    <tr><td>{{ r.priority }}</td><td>{{ r.name }}</td><td><code>{{ r.condition }}</code></td><td>{{ r.strategy }}</td><td>{{ r.kind }}</td>
+      <td><form method="post" action="{{ url_for('hapus_aturan', rule_id=r.id) }}"><button class="link" type="submit">Hapus</button></form></td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+
+<h2>Tambah aturan</h2>
+<form method="post" class="stack">
+  <label>Nama aturan <input name="name" required></label>
+  <label>Kondisi <input name="condition" placeholder="musim_ramai AND NOT kompetitor_agresif" required></label>
+  <label>Strategi yang dipilih <input name="strategy" required></label>
+  <label>Jenis <select name="kind"><option value="strategi">Strategi</option><option value="peringatan">Peringatan</option></select></label>
+  <label>Prioritas (0 paling utama) <input name="priority" type="number" min="0" max="9" value="5"></label>
+  <button class="btn" type="submit">Simpan aturan</button>
+</form>
+{% endblock %}

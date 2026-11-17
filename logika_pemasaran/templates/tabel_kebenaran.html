@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% from "_macros.html" import bit %}
+{% block title %}Tabel kebenaran{% endblock %}
+{% block content %}
+<h1>Tabel kebenaran</h1>
+<p class="lead">Uji apakah sebuah pernyataan bisnis selalu benar, selalu salah, atau bergantung kondisi.</p>
+<form method="post" class="stack">
+  <label>Ekspresi <input name="expr" value="{{ expr }}" placeholder="(diskon AND stok) -> penjualan" required></label>
+  <label>Bandingkan dengan (opsional) <input name="other" value="{{ other }}" placeholder="NOT penjualan -> NOT (diskon AND stok)"></label>
+  <button class="btn" type="submit">Buat tabel</button>
+</form>
+<p class="note">Contoh: <a href="{{ url_for('tabel_kebenaran', expr='p -> q', other='~q -> ~p') }}">p → q dan kontraposisinya</a> ·
+  <a href="{{ url_for('tabel_kebenaran', expr='p OR NOT p') }}">tautologi</a></p>
+
+{% if table %}
+<section>
+  <p><code>{{ table.normalized }}</code>: <strong>{{ table.kind }}</strong>, benar pada {{ table.true_count }} dari {{ table.total }} kondisi.</p>
+  {% if same is not none %}<p class="out {{ '' if same else 'warn' }}">{{ 'Kedua ekspresi ekuivalen.' if same else 'Kedua ekspresi tidak ekuivalen.' }}</p>{% endif %}
+  <div class="scroll">
+  <table class="tt">
+    <thead><tr>{% for v in table.variables %}<th>{{ v }}</th>{% endfor %}{% for h in table.step_headers %}<th>{{ h }}</th>{% endfor %}<th>Hasil</th></tr></thead>
+    <tbody>
+    {% for row in table.rows %}
+      <tr>{% for x in row.inputs %}<td>{{ bit(x) }}</td>{% endfor %}{% for x in row.steps %}<td>{{ bit(x) }}</td>{% endfor %}<td>{{ bit(row.result) }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

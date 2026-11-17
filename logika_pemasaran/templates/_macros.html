@@ -1,0 +1,3 @@
+{% macro bit(v) -%}
+<span class="bit {{ 'on' if v else 'off' }}" title="{{ 'Benar' if v else 'Salah' }}">{{ 1 if v else 0 }}</span>
+{%- endmacro %}

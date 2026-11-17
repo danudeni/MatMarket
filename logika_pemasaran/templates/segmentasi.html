@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Segmentasi pelanggan{% endblock %}
+{% block content %}
+<h1>Segmentasi pelanggan</h1>
+<p class="lead">Masukkan kelompok pelanggan sebagai himpunan, lalu pilih segmen target dengan ekspresi logika.</p>
+<form method="post" class="stack">
+  {% for e in entries %}
+  <div class="pair">
+    <label>Nama himpunan <input name="name{{ loop.index0 }}" value="{{ e.name }}"></label>
+    <label>Anggota (pisahkan dengan koma) <textarea name="members{{ loop.index0 }}" rows="2">{{ e.members }}</textarea></label>
+  </div>
+  {% endfor %}
+  <label>Segmen target <input name="expression" value="{{ expression }}" placeholder="Member AND NOT Pembeli_Online"></label>
+  <button class="btn" type="submit">Analisis segmen</button>
+</form>
+
+{% if analysis %}
+<section>
+  <p>Total pelanggan unik (semesta): <strong>{{ analysis.universe|length }}</strong></p>
+  {% if analysis.result %}
+    <div class="out"><strong>Segmen target:</strong> <code>{{ analysis.result.formal }}</code><br>
+      {{ analysis.result.members|join(', ') or 'tidak ada anggota' }} ({{ analysis.result.share }}% dari semesta)</div>
+  {% endif %}
+  {% for p in analysis.pairs %}
+  <h2>{{ p.a }} dan {{ p.b }}</h2>
+  <ul>
+    <li>Gabungan: {{ p.union|join(', ') or '-' }}</li>
+    <li>Irisan: {{ p.intersection|join(', ') or '-' }}</li>
+    <li>{{ p.a }} saja: {{ p.a_minus_b|join(', ') or '-' }}</li>
+    <li>{{ p.b }} saja: {{ p.b_minus_a|join(', ') or '-' }}</li>
+    <li>Pembuktian: {{ p.inclusion_exclusion }}</li>
+  </ul>
+  {% endfor %}
+</section>
+{% endif %}
+{% endblock %}
